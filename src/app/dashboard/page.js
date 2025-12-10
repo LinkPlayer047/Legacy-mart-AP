@@ -4,7 +4,7 @@ import Sidebar from "@/components/home/components/Sidebar";
 import { ImUsers } from "react-icons/im";
 import { BsFillBoxSeamFill } from "react-icons/bs";
 import { FaCartShopping, FaEye } from "react-icons/fa6";
-// import ProtectedRoute from "@/components/ProtectedRoute";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function Dashboard() {
   const stats = [
@@ -47,7 +47,7 @@ export default function Dashboard() {
   ];
 
   return (
-    // <ProtectedRoute>
+    <ProtectedRoute>
     <Sidebar>
       <h1 className="text-3xl font-bold">Dashboard</h1>
       <p className="mt-2 text-gray-600">Welcome to the admin dashboard!</p>
@@ -106,6 +106,6 @@ export default function Dashboard() {
         </div>
       </div>
     </Sidebar>
-    // </ProtectedRoute>
+    </ProtectedRoute>
   );
 }
