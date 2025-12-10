@@ -72,12 +72,12 @@ const Sidebar = ({ children }) => {
             )
           })}        
         </nav>
-        <button
+        {/* <button
         onClick={handleLogout}
           className="w-full mt-20 py-2 hidden md:flex items-end border-t border-t-gray-600 justify-center bg-white text-sm transition hover:text-red-500 hover:bg-red-500/20">
             {collapsed ? "↩" : ""}
             <span className="ml-2 font-bold">{collapsed ? "" : "Logout"}</span>
-          </button>
+          </button> */}
       </aside>
 
       <div className={`
@@ -90,12 +90,12 @@ const Sidebar = ({ children }) => {
         ☰ 
       </button>
       <span></span>
-      <button
+      {/* <button
             onClick={handleLogout}
             className="flex items-center md:m-4 md:hidden gap-2 bg-blue-500 px-4 py-2 rounded-md hover:bg-red-700 transition"
           >
             <span className="text-white">Logout</span>
-          </button>
+          </button> */}
       </header>
       <main className="flex-1 h-screen p-6 overflow-y-auto">{children}</main>
       </div>
