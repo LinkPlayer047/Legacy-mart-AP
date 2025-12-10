@@ -71,8 +71,8 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
     try {
       const method = initialData ? "PUT" : "POST";
       const url = initialData
-        ? `http://localhost:3001/api/products/${initialData._id}`
-        : "http://localhost:3001/api/products";
+        ? `https://legacy-mart.vercel.app/api/products/${initialData._id}`
+        : "https://legacy-mart.vercel.app/api/products";
 
       const res = await fetch(url, {
         method,

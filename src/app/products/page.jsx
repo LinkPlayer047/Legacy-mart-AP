@@ -13,7 +13,7 @@ export default function Products() {
 
   async function loadProducts() {
     try {
-      const res = await fetch("http://localhost:3001/api/products");
+      const res = await fetch("https://legacy-mart.vercel.app/api/products");
       const data = await res.json();
       setProducts(data);
     } catch (error) {
@@ -29,7 +29,7 @@ export default function Products() {
   if (!confirm(`Are you sure you want to delete "${product.name}"?`)) return;
 
   try {
-    const res = await fetch(`http://localhost:3001/api/products/${product._id}`, {
+    const res = await fetch(`https://legacy-mart.vercel.app/api/products/${product._id}`, {
       method: "DELETE",
     });
 

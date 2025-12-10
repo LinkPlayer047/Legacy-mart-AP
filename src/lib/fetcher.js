@@ -1,6 +1,5 @@
-// lib/fetcher.js
 export async function api(endpoint, options = {}) {
-  const baseURL = "http://localhost:3001/"; // dev ke liye
+  const baseURL = "https://legacy-mart.vercel.app/";
   const res = await fetch(baseURL + endpoint, {
     headers: { "Content-Type": "application/json" },
     ...options,
