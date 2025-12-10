@@ -24,7 +24,7 @@ const Sidebar = ({ children }) => {
 
     const handleLogout = () =>{
       localStorage.removeItem('token')
-      router.push('/dashboard')
+      router.push('/')
     }
 
     const menuItems = [
