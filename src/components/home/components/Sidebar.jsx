@@ -22,10 +22,10 @@ const Sidebar = ({ children }) => {
       return () => document.removeEventListener('click', handleOutside)
     }, [sidebarOpen])
 
-    const handleLogout = () =>{
-      localStorage.removeItem('token')
-      router.push('/login')
-    }
+    // const handleLogout = () =>{
+    //   localStorage.removeItem('token')
+    //   router.push('/login')
+    // }
 
     const menuItems = [
       {name : "Dashboard", path : "/dashboard", icon : "🏠" },
