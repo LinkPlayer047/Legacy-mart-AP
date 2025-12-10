@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
     const token = localStorage.getItem("adminToken");
 
     if (!token) {
-      router.replace("/login");
+      router.replace("/dashboard");
     } else {
       setLoading(false);
     }
