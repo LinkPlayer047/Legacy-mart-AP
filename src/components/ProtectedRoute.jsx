@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 const ProtectedRoute = ({ children }) => {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -13,9 +14,11 @@ const ProtectedRoute = ({ children }) => {
     } else {
       setAuthorized(true);
     }
-  }, []);
+    setLoading(false);
+  }, [router]);
 
-  if (!authorized) return null; // token check hone tak kuch render mat karo
+  if (loading) return null;
+  if (!authorized) return null;
   return <>{children}</>;
 };
 
