@@ -74,7 +74,7 @@ function editProduct(product) {
               key={product._id}
               className="bg-white border rounded-lg shadow-md p-4 flex flex-col"
             >
-              <img src={product.imageUrl || "/upload/placeholder.png"} alt={product.name} 
+              <img src={product.imageUrl || `/upload/${product.imageName || "placeholder.png"}`} alt={product.name}
                 className="w-full h-40 object-cover rounded-md mb-4"
               />
               <h2 className="font-bold text-lg">{product.name}</h2>
