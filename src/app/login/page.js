@@ -24,7 +24,6 @@ export default function AdminLogin() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
 
-      // ✅ Set cookie instead of localStorage
       document.cookie = `adminToken=${data.token}; path=/; max-age=3600; Secure; SameSite=Strict`;
 
       router.push("/dashboard");
@@ -36,7 +35,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen bg-gray-300">
       <form onSubmit={handleSubmit} className="bg-white shadow-lg p-8 rounded-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
 

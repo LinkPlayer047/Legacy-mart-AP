@@ -34,7 +34,6 @@ export default function Dashboard() {
   const recentOrders = [
     { id: "#001", customer: "Adil", status: "Completed", color: "text-green-600", total: "PKR. 1200.00" },
     { id: "#002", customer: "Nouman", status: "Pending", color: "text-yellow-500", total: "PKR. 8500.00" },
-    // ... baki orders
   ];
 
   return (
