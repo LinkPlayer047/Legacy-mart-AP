@@ -1,12 +1,21 @@
-import Home from '@/components/home/Home'
-import React from 'react'
+import Home from "@/components/home/Home";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import Sidebar from "@/components/home/components/Sidebar";
 
-const page = () => {
+export default function Page() {
+  const isDashboard = false; 
+
   return (
-    <div>
-      <Home />
-    </div>
-  )
+    <>
+      {isDashboard ? (
+        <ProtectedRoute>
+          <Sidebar>
+            <Home />
+          </Sidebar>
+        </ProtectedRoute>
+      ) : (
+        <Home />
+      )}
+    </>
+  );
 }
-
-export default page
