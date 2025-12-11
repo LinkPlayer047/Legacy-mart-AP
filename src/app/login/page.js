@@ -18,13 +18,15 @@ export default function AdminLogin() {
       const res = await fetch("https://legacy-mart.vercel.app/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
 
-      localStorage.setItem("adminToken", data.token);
+      // ✅ Set cookie instead of localStorage
+      document.cookie = `adminToken=${data.token}; path=/; max-age=3600; Secure; SameSite=Strict`;
+
       router.push("/dashboard");
     } catch (err) {
       setError(err.message);

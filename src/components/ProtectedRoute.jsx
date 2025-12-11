@@ -5,19 +5,20 @@ import { useRouter } from "next/navigation";
 const ProtectedRoute = ({ children }) => {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
-  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("adminToken="))
+      ?.split("=")[1];
+
     if (!token) {
       router.replace("/login");
     } else {
       setAuthorized(true);
     }
-    setLoading(false);
   }, [router]);
 
-  if (loading) return null;
   if (!authorized) return null;
   return <>{children}</>;
 };

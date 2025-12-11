@@ -6,12 +6,16 @@ import { usePathname, useRouter } from "next/navigation";
 const Sidebar = ({ children }) => {
   const [sidebarOpen, setSidebaropen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [authorized, setAuthorized] = useState(false); // add auth check
+  const [authorized, setAuthorized] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("adminToken="))
+      ?.split("=")[1];
+
     if (!token) {
       router.replace("/login");
     } else {
@@ -19,22 +23,8 @@ const Sidebar = ({ children }) => {
     }
   }, [router]);
 
-  useEffect(() => {
-    const handleOutside = (e) => {
-      if (
-        sidebarOpen &&
-        !e.target.closest("#sidebar") &&
-        !e.target.closest("#sidebar-toggle")
-      ) {
-        setSidebaropen(false);
-      }
-    };
-    document.addEventListener("click", handleOutside);
-    return () => document.removeEventListener("click", handleOutside);
-  }, [sidebarOpen]);
-
   const handleLogout = () => {
-    localStorage.removeItem("adminToken"); 
+    document.cookie = "adminToken=; path=/; max-age=0"; // delete cookie
     router.push("/login");
   };
 
@@ -46,7 +36,7 @@ const Sidebar = ({ children }) => {
     { name: "Websiteusers", path: "/users", icon: "👥" },
   ];
 
-  if (!authorized) return null; // don't render sidebar if not logged in
+  if (!authorized) return null;
 
   return (
     <div className="flex h-screen">
@@ -63,10 +53,7 @@ const Sidebar = ({ children }) => {
           <span className={`font-bold text-xl ${collapsed ? "hidden" : "block"}`}>
             <img src="/legacy-logo.png" alt="" />
           </span>
-          <button
-            className=" md:hidden text-xl text-white"
-            onClick={() => setSidebaropen(false)}
-          >
+          <button className=" md:hidden text-xl text-white" onClick={() => setSidebaropen(false)}>
             ✕
           </button>
         </div>
@@ -106,12 +93,7 @@ const Sidebar = ({ children }) => {
         </button>
       </aside>
 
-      <div
-        className={`
-          flex-1 flex flex-col transition-all duration-300
-          ${collapsed ? "md:ml-20" : "md:ml-64"}
-        `}
-      >
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${collapsed ? "md:ml-20" : "md:ml-64"}`}>
         <header className="flex items-center justify-between bg-white shadow-lg px-5 md:p-4 backdrop-blur-lg">
           <button
             id="sidebar-toggle"
