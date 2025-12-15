@@ -18,7 +18,7 @@ export default function AddProductModal({
     colors: [],
     sizes: [],
     sale: 0,
-    images: [], // preview URLs
+    images: [], // preview URLs or backend URLs
   });
 
   const [imageFiles, setImageFiles] = useState([]); // real files
@@ -38,12 +38,11 @@ export default function AddProductModal({
         sizes: initialData.sizes || [],
         sale: initialData.sale || 0,
         images: (initialData.images || []).map(img =>
-          typeof img === "string" ? img : img.url
+          typeof img === "string" ? img : img.url || img
         ),
       });
 
-      // edit mode → no new files initially
-      setImageFiles([]);
+      setImageFiles([]); // no new files initially
     } else {
       setForm({
         name: "",
@@ -91,13 +90,10 @@ export default function AddProductModal({
   }
 
   function removeImage(idx) {
-    // remove preview
     setForm(prev => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== idx),
     }));
-
-    // remove real file (important fix)
     setImageFiles(prev => prev.filter((_, i) => i !== idx));
   }
 
@@ -116,11 +112,16 @@ export default function AddProductModal({
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("price", form.price);
+      formData.append("category", form.category);
       formData.append("description", form.description);
+      formData.append("sale", form.sale);
 
-      imageFiles.forEach(file => {
-        formData.append("images", file);
-      });
+      // append colors and sizes
+      form.colors.forEach(color => formData.append("colors[]", color));
+      form.sizes.forEach(size => formData.append("sizes[]", size));
+
+      // append image files
+      imageFiles.forEach(file => formData.append("images", file));
 
       const res = await fetch(url, {
         method,
@@ -130,7 +131,6 @@ export default function AddProductModal({
       if (!res.ok) throw new Error("Failed to save product");
 
       alert(initialData ? "Product updated successfully" : "Product added successfully");
-
       onAdded();
       onClose();
     } catch (err) {
@@ -159,9 +159,10 @@ export default function AddProductModal({
             {form.images.map((img, idx) => (
               <div key={idx} className="relative">
                 <img
-                  src={img}
+                  src={img || "/placeholder.png"}
                   alt="preview"
                   className="w-20 h-20 object-cover rounded-lg border"
+                  onError={e => (e.currentTarget.src = "/placeholder.png")}
                 />
                 <button
                   type="button"
