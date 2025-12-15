@@ -4,12 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import ModalWrapper from "@/components/ModalWrapper";
 import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
 
-export default function AddProductModal({
-  isOpen,
-  onClose,
-  onAdded,
-  initialData,
-}) {
+export default function AddProductModal({ isOpen, onClose, onAdded, initialData }) {
   const [form, setForm] = useState({
     name: "",
     price: "",
@@ -21,12 +16,10 @@ export default function AddProductModal({
     images: [], // preview URLs or backend URLs
   });
 
-  const [imageFiles, setImageFiles] = useState([]); // real files
+  const [imageFiles, setImageFiles] = useState([]); // real files for upload
   const imageInputRef = useRef(null);
 
-  // =========================
-  // Prefill form on EDIT
-  // =========================
+  // Prefill form if editing
   useEffect(() => {
     if (initialData) {
       setForm({
@@ -37,12 +30,9 @@ export default function AddProductModal({
         colors: initialData.colors || [],
         sizes: initialData.sizes || [],
         sale: initialData.sale || 0,
-        images: (initialData.images || []).map(img =>
-          typeof img === "string" ? img : img.url || img
-        ),
+        images: (initialData.images || []).map(img => img.url || img),
       });
-
-      setImageFiles([]); // no new files initially
+      setImageFiles([]);
     } else {
       setForm({
         name: "",
@@ -56,11 +46,8 @@ export default function AddProductModal({
       });
       setImageFiles([]);
     }
-  }, [initialData]);
+  }, [initialData, isOpen]);
 
-  // =========================
-  // Handlers
-  // =========================
   function handleChange(e) {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -77,16 +64,10 @@ export default function AddProductModal({
 
   function handleImageChange(e) {
     const files = Array.from(e.target.files);
-
-    // store real files
     setImageFiles(prev => [...prev, ...files]);
 
-    // store preview URLs
     const previews = files.map(file => URL.createObjectURL(file));
-    setForm(prev => ({
-      ...prev,
-      images: [...prev.images, ...previews],
-    }));
+    setForm(prev => ({ ...prev, images: [...prev.images, ...previews] }));
   }
 
   function removeImage(idx) {
@@ -94,20 +75,17 @@ export default function AddProductModal({
       ...prev,
       images: prev.images.filter((_, i) => i !== idx),
     }));
+
+    // Only remove actual file if it exists in imageFiles (new uploads)
     setImageFiles(prev => prev.filter((_, i) => i !== idx));
   }
 
-  // =========================
-  // Submit
-  // =========================
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       const method = initialData ? "PUT" : "POST";
-      const url = initialData
-        ? `https://legacy-mart.vercel.app/api/products/${initialData._id}`
-        : "https://legacy-mart.vercel.app/api/products";
+      const url = initialData ? `/api/products/${initialData._id}` : `/api/products`;
 
       const formData = new FormData();
       formData.append("name", form.name);
@@ -116,18 +94,11 @@ export default function AddProductModal({
       formData.append("description", form.description);
       formData.append("sale", form.sale);
 
-      // append colors and sizes
       form.colors.forEach(color => formData.append("colors[]", color));
       form.sizes.forEach(size => formData.append("sizes[]", size));
-
-      // append image files
       imageFiles.forEach(file => formData.append("images", file));
 
-      const res = await fetch(url, {
-        method,
-        body: formData,
-      });
-
+      const res = await fetch(url, { method, body: formData });
       if (!res.ok) throw new Error("Failed to save product");
 
       alert(initialData ? "Product updated successfully" : "Product added successfully");
@@ -139,9 +110,6 @@ export default function AddProductModal({
     }
   }
 
-  // =========================
-  // UI
-  // =========================
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8 overflow-y-auto max-h-[90vh]">
@@ -151,10 +119,7 @@ export default function AddProductModal({
 
         {/* Images */}
         <div className="mb-6">
-          <label className="block text-gray-600 font-medium mb-2">
-            Product Images
-          </label>
-
+          <label className="block text-gray-600 font-medium mb-2">Product Images</label>
           <div className="flex items-center gap-4 overflow-x-auto pb-2">
             {form.images.map((img, idx) => (
               <div key={idx} className="relative">
@@ -173,7 +138,6 @@ export default function AddProductModal({
                 </button>
               </div>
             ))}
-
             <button
               type="button"
               onClick={() => imageInputRef.current.click()}
@@ -181,7 +145,6 @@ export default function AddProductModal({
             >
               <AiOutlinePlus size={20} />
             </button>
-
             <input
               type="file"
               multiple
@@ -195,58 +158,18 @@ export default function AddProductModal({
         {/* Form */}
         <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="flex flex-col md:flex-row gap-4">
-            <input
-              name="name"
-              placeholder="Product Name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="flex-1 border border-gray-300 rounded-xl p-3"
-            />
-            <input
-              name="price"
-              type="number"
-              placeholder="Price"
-              value={form.price}
-              onChange={handleChange}
-              required
-              className="flex-1 border border-gray-300 rounded-xl p-3"
-            />
+            <input name="name" placeholder="Product Name" value={form.name} onChange={handleChange} required className="flex-1 border border-gray-300 rounded-xl p-3" />
+            <input name="price" type="number" placeholder="Price" value={form.price} onChange={handleChange} required className="flex-1 border border-gray-300 rounded-xl p-3" />
           </div>
-
-          <input
-            name="category"
-            placeholder="Category"
-            value={form.category}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-xl p-3"
-          />
-
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={form.description}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-xl p-3 h-28 resize-none"
-          />
+          <input name="category" placeholder="Category" value={form.category} onChange={handleChange} className="w-full border border-gray-300 rounded-xl p-3" />
+          <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} className="w-full border border-gray-300 rounded-xl p-3 h-28 resize-none" />
 
           {/* Colors */}
           <div>
-            <label className="block font-medium text-gray-600 mb-2">
-              Colors
-            </label>
+            <label className="block font-medium text-gray-600 mb-2">Colors</label>
             <div className="flex flex-wrap gap-2">
               {["Red", "Blue", "Green", "Black"].map(color => (
-                <button
-                  type="button"
-                  key={color}
-                  onClick={() => handleMultiSelect("colors", color)}
-                  className={`px-4 py-2 rounded-lg border ${
-                    form.colors.includes(color)
-                      ? "bg-gray-800 text-white"
-                      : "border-gray-300"
-                  }`}
-                >
+                <button key={color} type="button" onClick={() => handleMultiSelect("colors", color)} className={`px-4 py-2 rounded-lg border ${form.colors.includes(color) ? "bg-gray-800 text-white" : "border-gray-300"}`}>
                   {color}
                 </button>
               ))}
@@ -255,50 +178,21 @@ export default function AddProductModal({
 
           {/* Sizes */}
           <div>
-            <label className="block font-medium text-gray-600 mb-2">
-              Sizes
-            </label>
+            <label className="block font-medium text-gray-600 mb-2">Sizes</label>
             <div className="flex flex-wrap gap-2">
               {["S", "M", "L", "XL"].map(size => (
-                <button
-                  type="button"
-                  key={size}
-                  onClick={() => handleMultiSelect("sizes", size)}
-                  className={`px-4 py-2 rounded-lg border ${
-                    form.sizes.includes(size)
-                      ? "bg-gray-800 text-white"
-                      : "border-gray-300"
-                  }`}
-                >
+                <button key={size} type="button" onClick={() => handleMultiSelect("sizes", size)} className={`px-4 py-2 rounded-lg border ${form.sizes.includes(size) ? "bg-gray-800 text-white" : "border-gray-300"}`}>
                   {size}
                 </button>
               ))}
             </div>
           </div>
 
-          <input
-            type="number"
-            name="sale"
-            placeholder="Sale %"
-            value={form.sale}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-xl p-3"
-          />
+          <input type="number" name="sale" placeholder="Sale %" value={form.sale} onChange={handleChange} className="w-full border border-gray-300 rounded-xl p-3" />
 
           <div className="flex justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-2 rounded-xl bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2 rounded-xl bg-green-600 text-white"
-            >
-              {initialData ? "Update Product" : "Save Product"}
-            </button>
+            <button type="button" onClick={onClose} className="px-6 py-2 rounded-xl bg-gray-200">Cancel</button>
+            <button type="submit" className="px-6 py-2 rounded-xl bg-green-600 text-white">{initialData ? "Update Product" : "Save Product"}</button>
           </div>
         </form>
       </div>
