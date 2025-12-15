@@ -81,34 +81,39 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
   }
 
   async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const method = initialData ? "PUT" : "POST";
-      const url = initialData ? `/api/products/${initialData._id}` : `/api/products`;
+  try {
+    const method = initialData ? "PUT" : "POST";
+    const url = initialData
+      ? `${window.location.origin}/api/products/${initialData._id}`
+      : `${window.location.origin}/api/products`;
 
-      const formData = new FormData();
-      formData.append("name", form.name);
-      formData.append("price", form.price);
-      formData.append("category", form.category);
-      formData.append("description", form.description);
-      formData.append("sale", form.sale);
+    // 1️⃣ Create FormData first
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("price", form.price);
+    formData.append("category", form.category);
+    formData.append("description", form.description);
+    formData.append("sale", form.sale);
 
-      form.colors.forEach(color => formData.append("colors[]", color));
-      form.sizes.forEach(size => formData.append("sizes[]", size));
-      imageFiles.forEach(file => formData.append("images", file));
+    form.colors.forEach(color => formData.append("colors[]", color));
+    form.sizes.forEach(size => formData.append("sizes[]", size));
+    imageFiles.forEach(file => formData.append("images", file));
 
-      const res = await fetch(url, { method, body: formData });
-      if (!res.ok) throw new Error("Failed to save product");
+    // 2️⃣ Send fetch request
+    const res = await fetch(url, { method, body: formData });
 
-      alert(initialData ? "Product updated successfully" : "Product added successfully");
-      onAdded();
-      onClose();
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
+    if (!res.ok) throw new Error("Failed to save product");
+
+    alert(initialData ? "Product updated successfully" : "Product added successfully");
+    onAdded();
+    onClose();
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
   }
+}
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
