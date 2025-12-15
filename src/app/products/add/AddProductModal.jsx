@@ -85,7 +85,7 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
 
     try {
       const method = initialData ? "PUT" : "POST";
-      const url = initialData ? `/api/products/${initialData._id}` : `/api/products`;
+      const baseURL = initialData ? `/api/products/${initialData._id}` : `/api/products`;
 
       const formData = new FormData();
       formData.append("name", form.name);
@@ -98,7 +98,7 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
       form.sizes.forEach(size => formData.append("sizes[]", size));
       imageFiles.forEach(file => formData.append("images", file));
 
-      const res = await fetch(url, { method, body: formData });
+      const res = await fetch(baseURL, { method, body: formData });
       if (!res.ok) throw new Error("Failed to save product");
 
       alert(initialData ? "Product updated successfully" : "Product added successfully");
