@@ -85,7 +85,7 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
 
     try {
       const method = initialData ? "PUT" : "POST";
-      const baseURL = initialData ? `/api/products ${initialData._id}` : `/api/products`;
+      const baseURL = initialData ? `/api/products${initialData._id}` : `/api/products`;
 
       const formData = new FormData();
       formData.append("name", form.name);
