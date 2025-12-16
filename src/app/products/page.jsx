@@ -102,7 +102,7 @@ export default function Products() {
     return (
       <div
         key={product._id}
-        className="relative bg-white border rounded-lg shadow-md p-4 flex flex-col justify-between hover:shadow-xl transition-shadow duration-200"
+        className="relative bg-white border border-gray-400 rounded-lg shadow-md p-4 flex flex-col justify-between hover:shadow-xl transition-shadow duration-200"
       >
         {/* Sale Badge */}
         {hasSale && (
