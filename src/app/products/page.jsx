@@ -5,12 +5,15 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import AddProductModal from "./add/AddProductModal";
+import ConfirmModal from "@/components/ConfirmModal";
 import { toast } from "react-hot-toast";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   // Load products from API
   async function loadProducts() {
@@ -20,6 +23,7 @@ export default function Products() {
       setProducts(data);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load products");
     }
   }
 
@@ -27,63 +31,46 @@ export default function Products() {
     loadProducts();
   }, []);
 
-  // Delete product with confirmation popup
-  async function deleteProduct(product) {
-    toast(
-      (t) => (
-        <div className="backdrop-blur-sm p-4 bg-white rounded-xl flex flex-col gap-4 max-w-xs mx-auto">
-          <span className="text-gray-800 font-medium text-center">
-            Are you sure you want to delete "{product.name}"?
-          </span>
-          <div className="flex justify-center gap-4">
-            <button
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              onClick={() => toast.dismiss(t.id)}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              onClick={async () => {
-                try {
-                  const res = await fetch(
-                    `https://legacy-mart.vercel.app/api/products/${product._id}`,
-                    { method: "DELETE" }
-                  );
-                  if (!res.ok) throw new Error("Failed to delete product");
-
-                  toast.dismiss(t.id); // close confirmation
-                  toast.success(`"${product.name}" deleted successfully`);
-                  loadProducts();
-                } catch (err) {
-                  toast.dismiss(t.id);
-                  toast.error(err.message || "Something went wrong!");
-                  console.error(err);
-                }
-              }}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ),
-      { duration: Infinity } // keep open until action
-    );
-  }
-
-  // Open modal for edit
-  function editProduct(product) {
-    setEditingProduct(product);
-    setIsModalOpen(true);
-  }
-
-  // Open modal for add
+  // Open add product modal
   function addProduct() {
     setEditingProduct(null);
     setIsModalOpen(true);
   }
 
-  // After adding/updating
+  // Open edit product modal
+  function editProduct(product) {
+    setEditingProduct(product);
+    setIsModalOpen(true);
+  }
+
+  // Open delete confirmation modal
+  function openConfirmModal(product) {
+    setProductToDelete(product);
+    setIsConfirmOpen(true);
+  }
+
+  // Handle delete after confirmation
+  async function handleDelete() {
+    if (!productToDelete) return;
+
+    try {
+      const res = await fetch(`https://legacy-mart.vercel.app/api/products/${productToDelete._id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete product");
+
+      toast.success(`"${productToDelete.name}" deleted successfully`);
+      loadProducts();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Something went wrong!");
+    } finally {
+      setIsConfirmOpen(false);
+      setProductToDelete(null);
+    }
+  }
+
+  // After adding/updating product
   function handleAdded() {
     loadProducts();
     setIsModalOpen(false);
@@ -128,7 +115,7 @@ export default function Products() {
                   Edit
                 </button>
                 <button
-                  onClick={() => deleteProduct(product)}
+                  onClick={() => openConfirmModal(product)}
                   className="flex-1 bg-red-600 text-white rounded-lg py-2 hover:bg-red-700"
                 >
                   Delete
@@ -147,6 +134,14 @@ export default function Products() {
           }}
           onAdded={handleAdded}
           initialData={editingProduct}
+        />
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmModal
+          isOpen={isConfirmOpen}
+          onClose={() => setIsConfirmOpen(false)}
+          onConfirm={handleDelete}
+          message={`Are you sure you want to delete "${productToDelete?.name}"?`}
         />
       </Sidebar>
     </ProtectedRoute>
