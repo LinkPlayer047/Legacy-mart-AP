@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Productlist from "@/components/ProductList";
-import Link from "next/link";
 
 export default function AdminCategoryPage() {
   const [categories, setCategories] = useState([]);
@@ -11,37 +10,34 @@ export default function AdminCategoryPage() {
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingProducts, setLoadingProducts] = useState(true);
 
-  // Fetch categories from backend
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch("https://legacy-mart.vercel.app/api/category");
+        const res = await fetch("/api/category");
         const data = await res.json();
         setCategories(data);
         setLoadingCategories(false);
       } catch (err) {
-        console.error("Error fetching categories:", err);
+        console.error(err);
       }
     }
     fetchCategories();
   }, []);
 
-  // Fetch products from backend
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("https://legacy-mart.vercel.app/api/products");
+        const res = await fetch("/api/products");
         const data = await res.json();
         setProducts(data);
         setLoadingProducts(false);
       } catch (err) {
-        console.error("Error fetching products:", err);
+        console.error(err);
       }
     }
     fetchProducts();
   }, []);
 
-  // Filter products based on selected category
   const filteredProducts =
     selectedCategory === "All"
       ? products
@@ -51,42 +47,22 @@ export default function AdminCategoryPage() {
         );
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-100 p-6 flex flex-col gap-4">
-        <h2 className="text-xl font-bold mb-4">Menu</h2>
-        <Link href="/dashboard">
-          <a className="px-4 py-2 rounded hover:bg-gray-200">Dashboard</a>
-        </Link>
-        <Link href="/category">
-          <a className="px-4 py-2 rounded hover:bg-gray-200 bg-blue-100 font-semibold">
-            Categories
-          </a>
-        </Link>
-        {/* Add more sidebar links here */}
-      </aside>
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-4">Category Products</h1>
 
-      {/* Main Content */}
-      <main className="flex-1 p-6">
-        <h1 className="text-2xl font-semibold mb-4">Category Products</h1>
-
-        {/* Buttons */}
-        <div className="flex gap-2 mb-6 flex-wrap">
-          {/* All Button */}
-          <button
-            className={`px-4 py-2 border rounded ${
-              selectedCategory === "All" ? "bg-blue-500 text-white" : ""
-            }`}
-            onClick={() => setSelectedCategory("All")}
-          >
-            All
-          </button>
-
-          {/* Dynamic Category Buttons */}
-          {loadingCategories ? (
-            <p>Loading categories...</p>
-          ) : (
-            categories.map((cat) => (
+      {/* Category Buttons */}
+      <div className="flex gap-2 mb-6 flex-wrap">
+        <button
+          className={`px-4 py-2 border rounded ${
+            selectedCategory === "All" ? "bg-blue-500 text-white" : ""
+          }`}
+          onClick={() => setSelectedCategory("All")}
+        >
+          All
+        </button>
+        {loadingCategories
+          ? <p>Loading...</p>
+          : categories.map((cat) => (
               <button
                 key={cat.id}
                 className={`px-4 py-2 border rounded ${
@@ -98,37 +74,35 @@ export default function AdminCategoryPage() {
               >
                 {cat.name}
               </button>
-            ))
-          )}
-        </div>
-
-        {/* Products */}
-        {loadingProducts ? (
-          <p>Loading products...</p>
-        ) : filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredProducts.map((product) => (
-              <div
-                key={product._id || product.id}
-                className="border rounded p-4 shadow hover:shadow-lg transition"
-              >
-                <img
-                  src={product.images?.[0]?.url || "/placeholder.png"}
-                  alt={product.name}
-                  className="w-full h-40 object-cover mb-2 rounded"
-                />
-                <h3 className="font-semibold">{product.name}</h3>
-                <p className="text-gray-500">
-                  Category: {product.category || "N/A"}
-                </p>
-                <p className="font-bold mt-1">PKR {product.price}</p>
-              </div>
             ))}
-          </div>
-        ) : (
-          <p className="text-gray-500">No products found in this category.</p>
-        )}
-      </main>
+      </div>
+
+      {/* Products Grid */}
+      {loadingProducts ? (
+        <p>Loading products...</p>
+      ) : filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredProducts.map((product) => (
+            <div
+              key={product._id || product.id}
+              className="border rounded p-4 shadow hover:shadow-lg transition"
+            >
+              <img
+                src={product.images?.[0]?.url || "/placeholder.png"}
+                alt={product.name}
+                className="w-full h-40 object-cover mb-2 rounded"
+              />
+              <h3 className="font-semibold">{product.name}</h3>
+              <p className="text-gray-500">
+                Category: {product.category || "N/A"}
+              </p>
+              <p className="font-bold mt-1">PKR {product.price}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500">No products found in this category.</p>
+      )}
     </div>
   );
 }
