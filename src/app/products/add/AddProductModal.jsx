@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import ModalWrapper from "@/components/ModalWrapper";
 import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
-import { Toaster } from "react-hot-toast"; // Professional toast library
+import { toast } from "react-hot-toast"; // Professional toast library
 
 export default function AddProductModal({ isOpen, onClose, onAdded, initialData }) {
   const [form, setForm] = useState({
