@@ -82,8 +82,8 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
     try {
       const method = initialData ? "PUT" : "POST";
       const url = initialData
-        ? `https://legacy-mart-ap.vercel.app/api/products/${initialData._id}`
-        : `https://legacy-mart-ap.vercel.app/api/products`;
+        ? `https://legacy-mart.vercel.app/api/products/${initialData._id}`
+        : `https://legacy-mart.vercel.app/api/products`;
 
       const formData = new FormData();
       formData.append("name", form.name);
