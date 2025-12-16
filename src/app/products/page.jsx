@@ -5,12 +5,14 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import AddProductModal from "./add/AddProductModal";
+import { toast } from "react-hot-toast"; 
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null); // 🆕
+  const [editingProduct, setEditingProduct] = useState(null); // 🆕 For edit
 
+  // Load products from API
   async function loadProducts() {
     try {
       const res = await fetch("https://legacy-mart.vercel.app/api/products");
@@ -25,8 +27,10 @@ export default function Products() {
     loadProducts();
   }, []);
 
+  // Delete product
   async function deleteProduct(product) {
-  if (!confirm(`Are you sure you want to delete "${product.name}"?`)) return;
+  const confirmDelete = window.confirm(`Are you sure you want to delete "${product.name}"?`);
+  if (!confirmDelete) return;
 
   try {
     const res = await fetch(`https://legacy-mart.vercel.app/api/products/${product._id}`, {
@@ -35,21 +39,31 @@ export default function Products() {
 
     if (!res.ok) throw new Error("Failed to delete product");
 
+    toast.success(`"${product.name}" deleted successfully`);
     loadProducts(); // reload products after delete
   } catch (err) {
-    alert(err.message);
+    toast.error(err.message || "Something went wrong while deleting!");
     console.error(err);
   }
 }
 
-function editProduct(product) {
-  setEditingProduct(product); // modal ko pata chale kaun edit kar raha
-  setIsModalOpen(true);       // modal open karo
-}
+  // Open modal for edit
+  function editProduct(product) {
+    setEditingProduct(product); // Pass product to modal
+    setIsModalOpen(true);
+  }
 
+  // Open modal for add
+  function addProduct() {
+    setEditingProduct(null); // No initial data
+    setIsModalOpen(true);
+  }
+
+  // After adding/updating
   function handleAdded() {
-    // Reload products after adding
     loadProducts();
+    setIsModalOpen(false);
+    setEditingProduct(null); // Reset editing
   }
 
   return (
@@ -60,7 +74,7 @@ function editProduct(product) {
 
         <div className="mt-6 flex justify-end">
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={addProduct}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
             <FaPlus /> Add Product
@@ -74,7 +88,11 @@ function editProduct(product) {
               key={product._id}
               className="bg-white border rounded-lg shadow-md p-4 flex flex-col"
             >
-              <img src={product.images[0]?.url || ""} alt={product.name} className="w-full h-40 object-cover rounded-md mb-4" />
+              <img
+                src={product.images?.[0]?.url || ""}
+                alt={product.name}
+                className="w-full h-40 object-cover rounded-md mb-4"
+              />
               <h2 className="font-bold text-lg">{product.name}</h2>
               <p className="text-gray-600">PKR {product.price}</p>
               <p className="text-gray-500 text-sm">{product.category}</p>
@@ -83,7 +101,7 @@ function editProduct(product) {
                   onClick={() => editProduct(product)}
                   className="flex-1 bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700"
                 >
-                Edit
+                  Edit
                 </button>
                 <button
                   onClick={() => deleteProduct(product)}
@@ -96,11 +114,15 @@ function editProduct(product) {
           ))}
         </div>
 
-        {/* Add Product Modal */}
+        {/* Add/Edit Product Modal */}
         <AddProductModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingProduct(null); // Reset after closing
+          }}
           onAdded={handleAdded}
+          initialData={editingProduct} // 🆕 Pass product data for edit
         />
       </Sidebar>
     </ProtectedRoute>
