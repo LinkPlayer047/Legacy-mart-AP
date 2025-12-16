@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import AddProductModal from "@/app/products/add/AddProductModal"; // import modal
+import Sidebar from "@/components/home/components/Sidebar";
 
 export default function AdminCategoryPage() {
   const [categories, setCategories] = useState([]);
@@ -53,7 +54,7 @@ export default function AdminCategoryPage() {
         );
 
   return (
-    <div className="flex min-h-screen">
+    <Sidebar>
 
       {/* Main Content */}
       <main className="flex-1 p-6">
@@ -143,6 +144,6 @@ export default function AdminCategoryPage() {
           allCategories={categories} // pass existing categories
         />
       </main>
-    </div>
+</Sidebar>
   );
 }
