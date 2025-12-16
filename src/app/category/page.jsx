@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Sidebar from "@/components/home/components/Sidebar";
 import AddProductModal from "@/app/products/add/AddProductModal"; // import modal
 
 export default function AdminCategoryPage() {
@@ -55,8 +54,6 @@ export default function AdminCategoryPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 p-6">
