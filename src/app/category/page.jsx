@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Productlist from "@/components/ProductList";
 import Sidebar from "@/components/home/components/Sidebar";
 
 export default function AdminCategoryPage() {
@@ -17,10 +16,13 @@ export default function AdminCategoryPage() {
       try {
         const res = await fetch("https://legacy-mart.vercel.app/api/category");
         const data = await res.json();
-        setCategories(data);
-        setLoadingCategories(false);
+        // Check if API returns { categories: [...] } or just array
+        const categoriesArray = data.categories || data;
+        setCategories(categoriesArray);
       } catch (err) {
         console.error("Error fetching categories:", err);
+      } finally {
+        setLoadingCategories(false); // stop loading in both success and error
       }
     }
     fetchCategories();
@@ -33,9 +35,10 @@ export default function AdminCategoryPage() {
         const res = await fetch("https://legacy-mart.vercel.app/api/products");
         const data = await res.json();
         setProducts(data);
-        setLoadingProducts(false);
       } catch (err) {
         console.error("Error fetching products:", err);
+      } finally {
+        setLoadingProducts(false);
       }
     }
     fetchProducts();
@@ -51,7 +54,7 @@ export default function AdminCategoryPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Existing Sidebar */}
+      {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
@@ -68,12 +71,13 @@ export default function AdminCategoryPage() {
           >
             All
           </button>
+
           {loadingCategories ? (
             <p>Loading categories...</p>
-          ) : (
+          ) : categories.length > 0 ? (
             categories.map((cat) => (
               <button
-                key={cat.id}
+                key={cat.id || cat._id || cat.name} // fallback key
                 className={`px-4 py-2 border rounded ${
                   selectedCategory === cat.name
                     ? "bg-blue-500 text-white"
@@ -84,6 +88,8 @@ export default function AdminCategoryPage() {
                 {cat.name}
               </button>
             ))
+          ) : (
+            <p className="text-gray-500">No categories found</p>
           )}
         </div>
 
@@ -94,7 +100,7 @@ export default function AdminCategoryPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
               <div
-                key={product._id || product.id}
+                key={product._id || product.id || product.name}
                 className="border rounded p-4 shadow hover:shadow-lg transition"
               >
                 <img
