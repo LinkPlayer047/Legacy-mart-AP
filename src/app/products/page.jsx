@@ -13,7 +13,7 @@ export default function Products() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Load products from API
   async function loadProducts() {
@@ -44,29 +44,28 @@ export default function Products() {
   }
 
   // Open delete confirmation modal
-  function openConfirmModal(product) {
-    setProductToDelete(product);
+  function handleDeleteClick(product) {
+    setSelectedProduct(product);
     setIsConfirmOpen(true);
   }
 
-  // Handle delete after confirmation
-  async function handleDelete() {
-    if (!productToDelete) return;
-
+  // Confirm delete action
+  async function confirmDelete() {
+    if (!selectedProduct) return;
     try {
-      const res = await fetch(`https://legacy-mart.vercel.app/api/products/${productToDelete._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `https://legacy-mart.vercel.app/api/products/${selectedProduct._id}`,
+        { method: "DELETE" }
+      );
       if (!res.ok) throw new Error("Failed to delete product");
 
-      toast.success(`"${productToDelete.name}" deleted successfully`);
+      toast.success(`"${selectedProduct.name}" deleted successfully`);
       loadProducts();
     } catch (err) {
-      console.error(err);
       toast.error(err.message || "Something went wrong!");
     } finally {
       setIsConfirmOpen(false);
-      setProductToDelete(null);
+      setSelectedProduct(null);
     }
   }
 
@@ -115,7 +114,7 @@ export default function Products() {
                   Edit
                 </button>
                 <button
-                  onClick={() => openConfirmModal(product)}
+                  onClick={() => handleDeleteClick(product)}
                   className="flex-1 bg-red-600 text-white rounded-lg py-2 hover:bg-red-700"
                 >
                   Delete
@@ -140,8 +139,8 @@ export default function Products() {
         <ConfirmModal
           isOpen={isConfirmOpen}
           onClose={() => setIsConfirmOpen(false)}
-          onConfirm={handleDelete}
-          message={`Are you sure you want to delete "${productToDelete?.name}"?`}
+          onConfirm={confirmDelete}
+          message={`Are you sure you want to delete "${selectedProduct?.name}"?`}
         />
       </Sidebar>
     </ProtectedRoute>
