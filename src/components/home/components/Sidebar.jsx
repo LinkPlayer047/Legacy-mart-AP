@@ -31,7 +31,7 @@ const Sidebar = ({ children }) => {
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: "🏠" },
     { name: "Products", path: "/products", icon: "📦" },
-    { name: "Categories", path: "/categories", icon: "🗂️" },
+    { name: "Categories", path: "/category", icon: "🗂️" },
     { name: "Orders", path: "/orders", icon: "🛒" },
     { name: "Websiteusers", path: "/users", icon: "👥" },
   ];
