@@ -5,12 +5,12 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import AddProductModal from "./add/AddProductModal";
-import { toast } from "react-hot-toast"; 
+import { toast } from "react-hot-toast";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null); // 🆕 For edit
+  const [editingProduct, setEditingProduct] = useState(null);
 
   // Load products from API
   async function loadProducts() {
@@ -19,7 +19,7 @@ export default function Products() {
       const data = await res.json();
       setProducts(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -27,55 +27,59 @@ export default function Products() {
     loadProducts();
   }, []);
 
-  // Delete product
+  // Delete product with confirmation popup
   async function deleteProduct(product) {
-  toast((t) => (
-    <div className="flex flex-col gap-2">
-      <span>Are you sure you want to delete "{product.name}"?</span>
-      <div className="flex justify-end gap-2 mt-2">
-        <button
-          className="px-3 py-1 bg-gray-300 rounded"
-          onClick={() => toast.dismiss(t.id)}
-        >
-          Cancel
-        </button>
-        <button
-          className="px-3 py-1 bg-red-600 text-white rounded"
-          onClick={async () => {
-            try {
-              const res = await fetch(`https://legacy-mart.vercel.app/api/products/${product._id}`, {
-                method: "DELETE",
-              });
-              if (!res.ok) throw new Error("Failed to delete product");
+    toast(
+      (t) => (
+        <div className="backdrop-blur-sm p-4 bg-white rounded-xl flex flex-col gap-4 max-w-xs mx-auto">
+          <span className="text-gray-800 font-medium text-center">
+            Are you sure you want to delete "{product.name}"?
+          </span>
+          <div className="flex justify-center gap-4">
+            <button
+              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              onClick={() => toast.dismiss(t.id)}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              onClick={async () => {
+                try {
+                  const res = await fetch(
+                    `https://legacy-mart.vercel.app/api/products/${product._id}`,
+                    { method: "DELETE" }
+                  );
+                  if (!res.ok) throw new Error("Failed to delete product");
 
-              toast.success(`"${product.name}" deleted successfully`);
-              loadProducts(); // reload products
-              toast.dismiss(t.id); // close the confirmation toast
-            } catch (err) {
-              toast.error(err.message || "Something went wrong!");
-              console.error(err);
-            }
-          }}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  ), {
-    duration: Infinity, // keeps it open until action
-  });
-}
-
+                  toast.dismiss(t.id); // close confirmation
+                  toast.success(`"${product.name}" deleted successfully`);
+                  loadProducts();
+                } catch (err) {
+                  toast.dismiss(t.id);
+                  toast.error(err.message || "Something went wrong!");
+                  console.error(err);
+                }
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity } // keep open until action
+    );
+  }
 
   // Open modal for edit
   function editProduct(product) {
-    setEditingProduct(product); // Pass product to modal
+    setEditingProduct(product);
     setIsModalOpen(true);
   }
 
   // Open modal for add
   function addProduct() {
-    setEditingProduct(null); // No initial data
+    setEditingProduct(null);
     setIsModalOpen(true);
   }
 
@@ -83,7 +87,7 @@ export default function Products() {
   function handleAdded() {
     loadProducts();
     setIsModalOpen(false);
-    setEditingProduct(null); // Reset editing
+    setEditingProduct(null);
   }
 
   return (
@@ -139,10 +143,10 @@ export default function Products() {
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);
-            setEditingProduct(null); // Reset after closing
+            setEditingProduct(null);
           }}
           onAdded={handleAdded}
-          initialData={editingProduct} // 🆕 Pass product data for edit
+          initialData={editingProduct}
         />
       </Sidebar>
     </ProtectedRoute>
