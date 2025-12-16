@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Productlist from "@/components/ProductList";
-import Sidebar from "@/components/Sidebar"; // existing sidebar component
+import Sidebar from "@/components/home/components/Sidebar";
 
 export default function AdminCategoryPage() {
   const [categories, setCategories] = useState([]);
