@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import ModalWrapper from "@/components/ModalWrapper";
 import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
+import { toast } from "react-hot-toast"; // Professional toast library
 
 export default function AddProductModal({ isOpen, onClose, onAdded, initialData }) {
   const [form, setForm] = useState({
@@ -32,7 +33,7 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
         sale: initialData.sale || 0,
       });
 
-      setExistingImages(initialData.images || []);
+      setExistingImages(initialData.images?.map(img => ({ url: img.url || img })) || []);
       setNewImages([]);
     } else {
       setForm({
@@ -78,7 +79,6 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
       const method = initialData ? "PUT" : "POST";
       const url = initialData
@@ -94,23 +94,18 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
 
       form.colors.forEach(c => formData.append("colors[]", c));
       form.sizes.forEach(s => formData.append("sizes[]", s));
-
-      // Only send new images
       newImages.forEach(file => formData.append("images", file));
+      existingImages.forEach(img => formData.append("existingImages[]", img.url));
 
-      const res = await fetch(url, {
-        method,
-        body: formData,
-      });
-
+      const res = await fetch(url, { method, body: formData });
       if (!res.ok) throw new Error("Failed to save product");
 
-      alert(initialData ? "Product updated successfully" : "Product added successfully");
+      toast.success(initialData ? "Product updated successfully" : "Product added successfully");
       onAdded();
       onClose();
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      toast.error(err.message || "Something went wrong!");
     }
   }
 
