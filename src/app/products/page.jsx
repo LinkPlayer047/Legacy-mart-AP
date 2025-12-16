@@ -29,23 +29,43 @@ export default function Products() {
 
   // Delete product
   async function deleteProduct(product) {
-  const confirmDelete = window.confirm(`Are you sure you want to delete "${product.name}"?`);
-  if (!confirmDelete) return;
+  toast((t) => (
+    <div className="flex flex-col gap-2">
+      <span>Are you sure you want to delete "{product.name}"?</span>
+      <div className="flex justify-end gap-2 mt-2">
+        <button
+          className="px-3 py-1 bg-gray-300 rounded"
+          onClick={() => toast.dismiss(t.id)}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-3 py-1 bg-red-600 text-white rounded"
+          onClick={async () => {
+            try {
+              const res = await fetch(`https://legacy-mart.vercel.app/api/products/${product._id}`, {
+                method: "DELETE",
+              });
+              if (!res.ok) throw new Error("Failed to delete product");
 
-  try {
-    const res = await fetch(`https://legacy-mart.vercel.app/api/products/${product._id}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) throw new Error("Failed to delete product");
-
-    toast.success(`"${product.name}" deleted successfully`);
-    loadProducts(); // reload products after delete
-  } catch (err) {
-    toast.error(err.message || "Something went wrong while deleting!");
-    console.error(err);
-  }
+              toast.success(`"${product.name}" deleted successfully`);
+              loadProducts(); // reload products
+              toast.dismiss(t.id); // close the confirmation toast
+            } catch (err) {
+              toast.error(err.message || "Something went wrong!");
+              console.error(err);
+            }
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  ), {
+    duration: Infinity, // keeps it open until action
+  });
 }
+
 
   // Open modal for edit
   function editProduct(product) {
