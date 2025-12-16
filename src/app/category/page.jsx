@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Sidebar from "@/components/home/components/Sidebar";
+import AddProductModal from "@/app/products/add/AddProductModal"; // import modal
 
 export default function AdminCategoryPage() {
   const [categories, setCategories] = useState([]);
@@ -9,38 +10,38 @@ export default function AdminCategoryPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Fetch categories from backend
-  useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const res = await fetch("https://legacy-mart.vercel.app/api/category");
-        const data = await res.json();
-        // Check if API returns { categories: [...] } or just array
-        const categoriesArray = data.categories || data;
-        setCategories(categoriesArray);
-      } catch (err) {
-        console.error("Error fetching categories:", err);
-      } finally {
-        setLoadingCategories(false); // stop loading in both success and error
-      }
+  async function fetchCategories() {
+    try {
+      const res = await fetch("https://legacy-mart.vercel.app/api/category");
+      const data = await res.json();
+      const categoriesArray = data.categories || data;
+      setCategories(categoriesArray);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    } finally {
+      setLoadingCategories(false);
     }
-    fetchCategories();
-  }, []);
+  }
 
   // Fetch products from backend
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch("https://legacy-mart.vercel.app/api/products");
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      } finally {
-        setLoadingProducts(false);
-      }
+  async function fetchProducts() {
+    try {
+      const res = await fetch("https://legacy-mart.vercel.app/api/products");
+      const data = await res.json();
+      setProducts(data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    } finally {
+      setLoadingProducts(false);
     }
+  }
+
+  // Initial fetch
+  useEffect(() => {
+    fetchCategories();
     fetchProducts();
   }, []);
 
@@ -59,7 +60,15 @@ export default function AdminCategoryPage() {
 
       {/* Main Content */}
       <main className="flex-1 p-6">
-        <h1 className="text-2xl font-semibold mb-4">Category Products</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-semibold">Category Products</h1>
+          <button
+            className="px-4 py-2 bg-green-600 text-white rounded"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            Add Product
+          </button>
+        </div>
 
         {/* Category Buttons */}
         <div className="flex gap-2 mb-6 flex-wrap">
@@ -69,7 +78,7 @@ export default function AdminCategoryPage() {
             }`}
             onClick={() => setSelectedCategory("All")}
           >
-            All
+            All Products
           </button>
 
           {loadingCategories ? (
@@ -77,7 +86,7 @@ export default function AdminCategoryPage() {
           ) : categories.length > 0 ? (
             categories.map((cat) => (
               <button
-                key={cat.id || cat._id || cat.name} // fallback key
+                key={cat.id || cat._id || cat.name}
                 className={`px-4 py-2 border rounded ${
                   selectedCategory === cat.name
                     ? "bg-blue-500 text-white"
@@ -104,7 +113,11 @@ export default function AdminCategoryPage() {
                 className="border rounded p-4 shadow hover:shadow-lg transition"
               >
                 <img
-                  src={product.images?.[0]?.url || product.image || "/placeholder.png"}
+                  src={
+                    product.images?.[0]?.url ||
+                    product.image ||
+                    "/placeholder.png"
+                  }
                   alt={product.name}
                   className="w-full h-40 object-cover mb-2 rounded"
                 />
@@ -119,6 +132,19 @@ export default function AdminCategoryPage() {
         ) : (
           <p className="text-gray-500">No products found in this category.</p>
         )}
+
+        {/* Add Product Modal */}
+        <AddProductModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAdded={async () => {
+            setLoadingProducts(true);
+            setLoadingCategories(true);
+            await fetchCategories();
+            await fetchProducts();
+          }}
+          allCategories={categories} // pass existing categories
+        />
       </main>
     </div>
   );

@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import ModalWrapper from "@/components/ModalWrapper";
 import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
-import { toast } from "react-hot-toast"; 
+import { toast } from "react-hot-toast";
 
-export default function AddProductModal({ isOpen, onClose, onAdded, initialData }) {
+export default function AddProductModal({ isOpen, onClose, onAdded, initialData, allCategories = [] }) {
   const [form, setForm] = useState({
     name: "",
     price: "",
@@ -120,7 +120,6 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
         <div className="mb-6">
           <label className="block text-gray-600 font-medium mb-2">Product Images</label>
           <div className="flex items-center gap-4 overflow-x-auto pb-2">
-
             {/* Existing Images */}
             {existingImages.map((img, idx) => (
               <div key={`old-${idx}`} className="relative">
@@ -197,13 +196,22 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData 
             />
           </div>
 
-          <input
-            name="category"
-            placeholder="Category"
-            value={form.category}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-xl p-3"
-          />
+          {/* Category Selection */}
+          <div className="relative">
+            <input
+              name="category"
+              placeholder="Category"
+              value={form.category}
+              onChange={handleChange}
+              list="category-list"
+              className="w-full border border-gray-300 rounded-xl p-3"
+            />
+            <datalist id="category-list">
+              {allCategories.map(cat => (
+                <option key={cat.id || cat} value={cat.name || cat} />
+              ))}
+            </datalist>
+          </div>
 
           <textarea
             name="description"
