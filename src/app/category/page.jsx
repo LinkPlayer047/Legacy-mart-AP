@@ -13,7 +13,7 @@ export default function AdminCategoryPage() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch("/api/category");
+        const res = await fetch("https://legacy-mart.vercel.app/api/category");
         const data = await res.json();
         setCategories(data);
         setLoadingCategories(false);
@@ -28,7 +28,7 @@ export default function AdminCategoryPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch("https://legacy-mart.vercel.app/api/products");
         const data = await res.json();
         setProducts(data);
         setLoadingProducts(false);
