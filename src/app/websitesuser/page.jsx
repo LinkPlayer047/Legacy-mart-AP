@@ -12,7 +12,7 @@ export default function WebsiteUsersPage() {
       .find(r => r.startsWith("adminToken="))
       ?.split("=")[1];
 
-    const res = await fetch("https://legacy-mart.vercel.app/api/users", {
+    const res = await fetch("/api/users", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
