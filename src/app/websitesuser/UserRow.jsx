@@ -7,7 +7,7 @@ export default function UserRow({ user, refresh }) {
       .find(r => r.startsWith("adminToken="))
       ?.split("=")[1];
 
-    await fetch(`/api/users/${user._id}`, {
+    await fetch(`https://legacy-mart.vercel.app/api/users/${user._id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
