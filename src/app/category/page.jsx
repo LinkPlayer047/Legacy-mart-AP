@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AddProductModal from "@/app/products/add/AddProductModal"; // import modal
+import AddProductModal from "@/app/products/add/AddProductModal";
 import Sidebar from "@/components/home/components/Sidebar";
 
 export default function AdminCategoryPage() {

@@ -152,13 +152,13 @@ export default function Products() {
         <div className="mt-4 flex gap-2">
           <button
             onClick={() => editProduct(product)}
-            className="flex-1 bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700"
+            className="flex-1 bg-blue-600 text-white rounded py-2 hover:bg-blue-700"
           >
             Edit
           </button>
           <button
             onClick={() => handleDeleteClick(product)}
-            className="flex-1 bg-red-600 text-white rounded-lg py-2 hover:bg-red-700"
+            className="flex-1 bg-red-600 text-white rounded py-2 hover:bg-red-700"
           >
             Delete
           </button>
