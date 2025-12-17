@@ -8,13 +8,15 @@ export default function UserRow({ user, refresh }) {
       ?.split("=")[1];
 
     await fetch(`https://legacy-mart.vercel.app/api/users/${user._id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+  method: "PATCH",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify(payload),
+  credentials: "include", // ye add karo
+});
+
 
     refresh();
   };

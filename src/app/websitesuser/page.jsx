@@ -13,8 +13,10 @@ export default function WebsiteUsersPage() {
       ?.split("=")[1];
 
     const res = await fetch("https://legacy-mart.vercel.app/api/users", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  headers: { Authorization: `Bearer ${token}` },
+  credentials: "include", // ye add karo
+});
+
 
     const data = await res.json();
     setUsers(data.users || []);
