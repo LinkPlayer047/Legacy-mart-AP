@@ -98,7 +98,7 @@ const Sidebar = ({ children }) => {
       {sidebarOpen && (
         <div
          onClick={() => setSidebaropen(false)}
-         className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"
+         className="fixed inset-0 z-30 bg-black/80 backdrop-blur-sm md:hidden"
         />
       )}
 
