@@ -24,7 +24,9 @@ export default function AdminLogin() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
 
-      document.cookie = `adminToken=${data.token}; path=/; max-age=3600; Secure; SameSite=Strict`;
+      document.cookie =
+  `adminToken=${data.token}; path=/; max-age=3600; Secure; SameSite=None`;
+
 
       router.push("/dashboard");
     } catch (err) {
