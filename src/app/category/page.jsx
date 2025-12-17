@@ -58,7 +58,7 @@ export default function AdminCategoryPage() {
 
       {/* Main Content */}
       <main className="flex-1 p-6">
-        <div className="flex justify-between items-center mb-4">
+        {/* <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-semibold">Category Products</h1>
           <button
             className="px-4 py-2 bg-green-600 text-white rounded"
@@ -66,7 +66,7 @@ export default function AdminCategoryPage() {
           >
             Add Product
           </button>
-        </div>
+        </div> */}
 
         {/* Category Buttons */}
         <div className="flex gap-2 mb-6 flex-wrap">
