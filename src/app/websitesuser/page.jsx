@@ -26,10 +26,10 @@ export default function WebsiteUsersPage() {
 
   return (
     <Sidebar>
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Website Users</h1>
-      <UsersTable users={users} refresh={fetchUsers} />
-    </div>
+      <div>
+        <h1 className="text-2xl font-bold mb-4">Website Users</h1>
+        <UsersTable users={users} refresh={fetchUsers} />
+      </div>
     </Sidebar>
   );
 }
