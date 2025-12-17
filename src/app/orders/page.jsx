@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import OrdersTable from "./OrdersTable";
+import Sidebar from "@/components/home/components/Sidebar";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -37,9 +38,11 @@ export default function OrdersPage() {
   }
 
   return (
+    <Sidebar >
     <div className="w-full">
       <h1 className="text-2xl font-bold mb-6">Orders Management</h1>
       <OrdersTable orders={orders} refresh={fetchOrders} />
     </div>
+    </Sidebar>
   );
 }
