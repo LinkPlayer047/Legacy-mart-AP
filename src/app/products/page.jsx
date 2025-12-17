@@ -85,7 +85,7 @@ export default function Products() {
         <div className="mt-6 flex justify-end">
           <button
             onClick={addProduct}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             <FaPlus /> Add Product
           </button>
