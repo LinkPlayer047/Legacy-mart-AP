@@ -7,7 +7,7 @@ export default function OrderRow({ order, refresh }) {
       .find(row => row.startsWith("adminToken="))
       ?.split("=")[1];
 
-    await fetch(`/api/orders/${order._id}`, {
+    await fetch(`https://legacy-mart.vercel.app/api/orders/${order._id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
