@@ -141,7 +141,7 @@ export default function AdminCategoryPage() {
             await fetchCategories();
             await fetchProducts();
           }}
-          allCategories={categories} // pass existing categories
+          allCategories={categories}
         />
       </main>
 </Sidebar>

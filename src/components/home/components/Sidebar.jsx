@@ -72,6 +72,7 @@ const Sidebar = ({ children }) => {
               <Link
                 key={items.path}
                 href={items.path}
+                onClick={() => setSidebaropen(false)}
                 className={`flex items-center gap-3 px-4 py-2 hover:bg-blue-500/20 transition 
                   ${active ? "bg-white shadow-lg" : ""}`}
               >
@@ -92,6 +93,15 @@ const Sidebar = ({ children }) => {
           <span className="ml-2 font-bold">{collapsed ? "" : "Logout"}</span>
         </button>
       </aside>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+         onClick={() => setSidebaropen(false)}
+         className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"
+        />
+      )}
+
 
       <div className={`flex-1 flex flex-col transition-all duration-300 ${collapsed ? "md:ml-20" : "md:ml-64"}`}>
         <header className="flex items-center justify-between bg-white shadow-lg px-5 md:p-4 backdrop-blur-lg">
