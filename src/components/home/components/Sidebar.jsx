@@ -33,7 +33,7 @@ const Sidebar = ({ children }) => {
     { name: "Products", path: "/products", icon: "📦" },
     { name: "Categories", path: "/category", icon: "🗂️" },
     { name: "Orders", path: "/orders", icon: "🛒" },
-    { name: "Websiteusers", path: "/users", icon: "👥" },
+    { name: "Websiteusers", path: "/websitesuser", icon: "👥" },
   ];
 
   if (!authorized) return null;
