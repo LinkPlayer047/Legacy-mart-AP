@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import AddProductModal from "@/app/products/add/AddProductModal";
 import Sidebar from "@/components/home/components/Sidebar";
+import Loader from "@/components/Loader";
 
 export default function AdminCategoryPage() {
   const [categories, setCategories] = useState([]);
@@ -15,6 +16,7 @@ export default function AdminCategoryPage() {
   // Fetch categories from backend
   async function fetchCategories() {
     try {
+      setLoadingCategories(true); 
       const res = await fetch("https://legacy-mart.vercel.app/api/category");
       const data = await res.json();
       const categoriesArray = data.categories || data;
@@ -29,13 +31,14 @@ export default function AdminCategoryPage() {
   // Fetch products from backend
   async function fetchProducts() {
     try {
+      setLoadingProducts(true); 
       const res = await fetch("https://legacy-mart.vercel.app/api/products");
       const data = await res.json();
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);
     } finally {
-      setLoadingProducts(false);
+      setLoadingProducts(false); 
     }
   }
 
@@ -53,19 +56,15 @@ export default function AdminCategoryPage() {
           (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
         );
 
+  // 🔥 Show loader if categories or products are loading
+  if (loadingCategories || loadingProducts) return <Loader />;
+
   return (
     <Sidebar>
-
       {/* Main Content */}
       <main className="flex-1 p-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-semibold">All Category Products</h1>
-          {/* <button
-            className="px-4 py-2 bg-green-600 text-white rounded"
-            onClick={() => setIsAddModalOpen(true)}
-          >
-            Add Product
-          </button> */}
         </div>
 
         {/* Category Buttons */}
@@ -79,9 +78,7 @@ export default function AdminCategoryPage() {
             All Products
           </button>
 
-          {loadingCategories ? (
-            <p>Loading categories...</p>
-          ) : categories.length > 0 ? (
+          {categories.length > 0 ? (
             categories.map((cat) => (
               <button
                 key={cat.id || cat._id || cat.name}
@@ -101,9 +98,7 @@ export default function AdminCategoryPage() {
         </div>
 
         {/* Products Grid */}
-        {loadingProducts ? (
-          <p>Loading products...</p>
-        ) : filteredProducts.length > 0 ? (
+        {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
               <div
@@ -111,11 +106,7 @@ export default function AdminCategoryPage() {
                 className="border rounded p-4 shadow hover:shadow-lg transition"
               >
                 <img
-                  src={
-                    product.images?.[0]?.url ||
-                    product.image ||
-                    "/placeholder.png"
-                  }
+                  src={product.images?.[0]?.url || product.image || "/placeholder.png"}
                   alt={product.name}
                   className="w-full h-40 object-cover mb-2 rounded"
                 />
@@ -136,14 +127,12 @@ export default function AdminCategoryPage() {
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
           onAdded={async () => {
-            setLoadingProducts(true);
-            setLoadingCategories(true);
             await fetchCategories();
             await fetchProducts();
           }}
           allCategories={categories}
         />
       </main>
-</Sidebar>
+    </Sidebar>
   );
 }
