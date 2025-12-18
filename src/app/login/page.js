@@ -15,18 +15,25 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const res = await fetch("https://legacy-mart.vercel.app/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        "https://legacy-mart.vercel.app/api/admin/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+          credentials: "include", // ✅ important for cookies
+        }
+      );
 
       const data = await res.json();
+
       if (!res.ok) throw new Error(data.message || "Login failed");
 
-      // ✅ Store token in localStorage for API requests
+      // ✅ Token store karna (cookie + localStorage)
+      document.cookie = `adminToken=${data.token}; path=/; max-age=3600`;
       localStorage.setItem("adminToken", data.token);
 
+      // ✅ Router push
       router.push("/dashboard");
     } catch (err) {
       setError(err.message);
@@ -37,7 +44,10 @@ export default function AdminLogin() {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-300">
-      <form onSubmit={handleSubmit} className="bg-white shadow-lg p-8 rounded-md w-96">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-lg p-8 rounded-md w-96"
+      >
         <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
 
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
