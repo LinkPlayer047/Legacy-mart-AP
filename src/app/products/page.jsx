@@ -17,9 +17,10 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 🔹 Load products from API
   async function loadProducts() {
     try {
-      setLoading(true); // 🔥 show loader
+      setLoading(true); // show loader
       const res = await fetch("https://legacy-mart.vercel.app/api/products");
       const data = await res.json();
       setProducts(data);
@@ -27,45 +28,34 @@ export default function Products() {
       console.error(error);
       toast.error("Failed to load products");
     } finally {
-      setLoading(false); // 🔥 hide loader
+      setLoading(false); // hide loader
     }
   }
 
-  // Load products from API
-  async function loadProducts() {
-    try {
-      const res = await fetch("https://legacy-mart.vercel.app/api/products");
-      const data = await res.json();
-      setProducts(data);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load products");
-    }
-  }
-
+  // 🔹 Load products on mount
   useEffect(() => {
     loadProducts();
   }, []);
 
-  // Open add product modal
+  // 🔹 Open add product modal
   function addProduct() {
     setEditingProduct(null);
     setIsModalOpen(true);
   }
 
-  // Open edit product modal
+  // 🔹 Open edit product modal
   function editProduct(product) {
     setEditingProduct(product);
     setIsModalOpen(true);
   }
 
-  // Open delete confirmation modal
+  // 🔹 Open delete confirmation modal
   function handleDeleteClick(product) {
     setSelectedProduct(product);
     setIsConfirmOpen(true);
   }
 
-  // Confirm delete action
+  // 🔹 Confirm delete action
   async function confirmDelete() {
     if (!selectedProduct) return;
     try {
@@ -76,7 +66,7 @@ export default function Products() {
       if (!res.ok) throw new Error("Failed to delete product");
 
       toast.success(`"${selectedProduct.name}" deleted successfully`);
-      loadProducts();
+      loadProducts(); // reload products
     } catch (err) {
       toast.error(err.message || "Something went wrong!");
     } finally {
@@ -85,14 +75,15 @@ export default function Products() {
     }
   }
 
-  // After adding/updating product
+  // 🔹 After adding/updating product
   function handleAdded() {
     loadProducts();
     setIsModalOpen(false);
     setEditingProduct(null);
   }
 
-  if (loading) return <Loader />
+  // 🔹 Show loader if loading
+  if (loading) return <Loader />;
 
   return (
     <ProtectedRoute>
@@ -110,84 +101,77 @@ export default function Products() {
         </div>
 
         {/* Products Grid */}
-<div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-  {products.map((product) => {
-    const hasSale = product.sale > 0;
-    const salePrice = hasSale
-      ? (product.price * (100 - product.sale)) / 100
-      : product.price;
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product) => {
+            const hasSale = product.sale > 0;
+            const salePrice = hasSale
+              ? (product.price * (100 - product.sale)) / 100
+              : product.price;
 
-    return (
-      <div
-        key={product._id}
-        className="relative bg-white border border-gray-400 rounded-lg shadow-md p-4 flex flex-col justify-between hover:shadow-xl transition-shadow duration-200"
-      >
-        {/* Sale Badge */}
-        {hasSale && (
-          <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md">
-            {product.sale}% OFF
-          </span>
-        )}
+            return (
+              <div
+                key={product._id}
+                className="relative bg-white border border-gray-400 rounded-lg shadow-md p-4 flex flex-col justify-between hover:shadow-xl transition-shadow duration-200"
+              >
+                {hasSale && (
+                  <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md">
+                    {product.sale}% OFF
+                  </span>
+                )}
 
-        <div>
-          <img
-            src={product.images?.[0]?.url || "/placeholder.png"}
-            alt={product.name}
-            className="w-full h-40 object-cover rounded-md mb-4"
-          />
+                <div>
+                  <img
+                    src={product.images?.[0]?.url || "/placeholder.png"}
+                    alt={product.name}
+                    className="w-full h-40 object-cover rounded-md mb-4"
+                  />
 
-          <h2 className="font-bold text-lg">{product.name}</h2>
+                  <h2 className="font-bold text-lg">{product.name}</h2>
 
-          {/* Price Display */}
-          <div className="mt-1">
-            {hasSale ? (
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400 line-through">
-                  PKR {product.price.toLocaleString()}
-                </span>
-                <span className="text-green-600 font-bold">
-                  PKR {salePrice.toLocaleString()}
-                </span>
+                  <div className="mt-1">
+                    {hasSale ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400 line-through">
+                          PKR {product.price.toLocaleString()}
+                        </span>
+                        <span className="text-green-600 font-bold">
+                          PKR {salePrice.toLocaleString()}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-800 font-semibold">
+                        PKR {product.price.toLocaleString()}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-gray-500 text-sm mt-1">{product.category}</p>
+                  {product.description && (
+                    <p className="text-gray-700 text-sm mt-2 line-clamp-1">
+                      {product.description}
+                    </p>
+                  )}
+                </div>
+
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => editProduct(product)}
+                    className="flex-1 bg-blue-600 text-white rounded py-2 hover:bg-blue-700"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteClick(product)}
+                    className="flex-1 bg-red-600 text-white rounded py-2 hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            ) : (
-              <span className="text-gray-800 font-semibold">
-                PKR {product.price.toLocaleString()}
-              </span>
-            )}
-          </div>
-
-          <p className="text-gray-500 text-sm mt-1">{product.category}</p>
-
-          {/* Short Description: 1 line only */}
-          {product.description && (
-            <p className="text-gray-700 text-sm mt-2 line-clamp-1">
-              {product.description}
-            </p>
-          )}
+            );
+          })}
         </div>
 
-        {/* Buttons at bottom */}
-        <div className="mt-4 flex gap-2">
-          <button
-            onClick={() => editProduct(product)}
-            className="flex-1 bg-blue-600 text-white rounded py-2 hover:bg-blue-700"
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => handleDeleteClick(product)}
-            className="flex-1 bg-red-600 text-white rounded py-2 hover:bg-red-700"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    );
-  })}
-</div>
-
-
-        {/* Add/Edit Product Modal */}
         <AddProductModal
           isOpen={isModalOpen}
           onClose={() => {
@@ -198,7 +182,6 @@ export default function Products() {
           initialData={editingProduct}
         />
 
-        {/* Delete Confirmation Modal */}
         <ConfirmModal
           isOpen={isConfirmOpen}
           onClose={() => setIsConfirmOpen(false)}

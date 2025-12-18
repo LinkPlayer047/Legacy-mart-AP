@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/Loader";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -41,6 +42,8 @@ export default function AdminLogin() {
       setLoading(false);
     }
   };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-300">
