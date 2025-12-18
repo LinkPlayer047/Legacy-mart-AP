@@ -24,9 +24,8 @@ export default function AdminLogin() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
 
-      document.cookie =
-  `adminToken=${data.token}; path=/; max-age=3600; Secure; SameSite=None`;
-
+      // ✅ Store token in localStorage for API requests
+      localStorage.setItem("adminToken", data.token);
 
       router.push("/dashboard");
     } catch (err) {

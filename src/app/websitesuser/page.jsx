@@ -7,15 +7,12 @@ export default function WebsiteUsersPage() {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
-    const token = document.cookie
-      .split("; ")
-      .find(r => r.startsWith("adminToken="))
-      ?.split("=")[1];
-
-    const res = await fetch("https://legacy-mart.vercel.app/api/users", {
+    const token = localStorage.getItem("adminToken"); // use localStorage instead of cookie
+const res = await fetch("https://legacy-mart.vercel.app/api/users", {
   headers: { Authorization: `Bearer ${token}` },
-  credentials: "include", // ye add karo
 });
+
+
 
 
     const data = await res.json();
