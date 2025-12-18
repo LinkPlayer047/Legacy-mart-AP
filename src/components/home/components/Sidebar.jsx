@@ -9,6 +9,18 @@ const Sidebar = ({ children }) => {
   const [authorized, setAuthorized] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+  setLoggingOut(true); // 🔥 Loader start
+  document.cookie = "adminToken=; path=/; max-age=0"; // delete cookie
+  localStorage.removeItem("adminToken"); // ✅ optional for localStorage
+  setTimeout(() => {
+    setLoggingOut(false); // 🔥 Loader stop (redirect se pehle optional)
+    router.push("/login");
+  }, 300); // 300ms optional delay for smooth UX
+};
+
 
   useEffect(() => {
     const token = document.cookie
@@ -23,11 +35,6 @@ const Sidebar = ({ children }) => {
     }
   }, [router]);
 
-  const handleLogout = () => {
-    document.cookie = "adminToken=; path=/; max-age=0"; // delete cookie
-    router.push("/login");
-  };
-
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: "🏠" },
     { name: "Products", path: "/products", icon: "📦" },
@@ -39,6 +46,8 @@ const Sidebar = ({ children }) => {
   if (!authorized) return null;
 
   return (
+    <>
+    {loggingOut && <Loader />}
     <div className="flex h-screen">
       <aside
         id="sidebar"
@@ -123,6 +132,7 @@ const Sidebar = ({ children }) => {
         <main className="flex-1 h-screen p-6 overflow-y-auto">{children}</main>
       </div>
     </div>
+    </>
   );
 };
 
