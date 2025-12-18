@@ -6,7 +6,7 @@ export default function Loader() {
       <img
         src="/legacy-logo.png"
         alt="Loading..."
-        className="w-32 h-32 animate-pulse" // size adjust kar sakte ho
+        className="w-60 h-32 animate-pulse" // size adjust kar sakte ho
       />
     </div>
   );

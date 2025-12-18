@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import AddProductModal from "./add/AddProductModal";
 import ConfirmModal from "@/components/ConfirmModal";
 import { toast } from "react-hot-toast";
+import Loader from "@/components/Loader";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -14,6 +15,21 @@ export default function Products() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  async function loadProducts() {
+    try {
+      setLoading(true); // 🔥 show loader
+      const res = await fetch("https://legacy-mart.vercel.app/api/products");
+      const data = await res.json();
+      setProducts(data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load products");
+    } finally {
+      setLoading(false); // 🔥 hide loader
+    }
+  }
 
   // Load products from API
   async function loadProducts() {
@@ -75,6 +91,8 @@ export default function Products() {
     setIsModalOpen(false);
     setEditingProduct(null);
   }
+
+  if (loading) return <Loader />
 
   return (
     <ProtectedRoute>

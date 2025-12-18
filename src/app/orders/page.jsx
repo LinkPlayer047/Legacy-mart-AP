@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import OrdersTable from "./OrdersTable";
 import Sidebar from "@/components/home/components/Sidebar";
+import Loader from "@/components/Loader";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -34,7 +35,7 @@ export default function OrdersPage() {
   }, []);
 
   if (loading) {
-    return <p className="text-center mt-10">Loading orders...</p>;
+    return <Loader />;
   }
 
   return (
