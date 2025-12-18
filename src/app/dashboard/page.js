@@ -6,6 +6,7 @@ import { ImUsers } from "react-icons/im";
 import { BsFillBoxSeamFill } from "react-icons/bs";
 import { FaCartShopping, FaEye } from "react-icons/fa6";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Loader from "@/components/Loader";
 
 export default function Dashboard() {
   const [users, setUsers] = useState([]);
@@ -78,6 +79,8 @@ export default function Dashboard() {
       bgColor: "bg-orange-500/20",
     },
   ];
+
+  if (loading) return <Loader />
 
   return (
     <ProtectedRoute>
