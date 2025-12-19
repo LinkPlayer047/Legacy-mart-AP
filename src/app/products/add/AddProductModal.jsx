@@ -225,7 +225,7 @@ export default function AddProductModal({ isOpen, onClose, onAdded, initialData,
           <div>
             <label className="block font-medium text-gray-600 mb-2">Colors</label>
             <div className="flex flex-wrap gap-2">
-              {["Red", "Blue", "Green", "Black"].map(color => (
+              {["Red", "Blue", "Green", "Black", "Brown", "White", "Gray"].map(color => (
                 <button
                   key={color}
                   type="button"
