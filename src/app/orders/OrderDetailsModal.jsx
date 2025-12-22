@@ -1,6 +1,6 @@
 export default function OrderDetailsModal({ order, onClose, updateStatus }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full relative flex flex-col md:flex-row gap-6">
         
         {/* Close button */}
@@ -19,7 +19,7 @@ export default function OrderDetailsModal({ order, onClose, updateStatus }) {
             <strong>Customer:</strong> {order.customer?.name} ({order.customer?.email})
           </div>
           <div className="mb-3">
-            <strong>Address:</strong> {order.address || "N/A"}
+            <strong>Address:</strong> {order.shipping?.address}, {order.shipping?.city || "N/A"}
           </div>
           <div className="mb-3">
             <strong>Total:</strong> Rs {order.totalPrice}
@@ -52,18 +52,18 @@ export default function OrderDetailsModal({ order, onClose, updateStatus }) {
         {/* Right section: Products */}
         <div className="flex-1 overflow-y-auto max-h-[400px]">
           <h3 className="font-semibold mb-2 text-lg">Products</h3>
-          <ul className="divide-y divide-gray-200">
-            {order.products?.map((p) => (
-              <li key={p.product._id} className="flex items-center py-2 gap-4">
+          <ul className="list-none">
+            {order.items?.map((item) => (
+              <li key={item.product._id} className="flex items-center gap-4 py-2">
                 <img
-                  src={p.product.image || "/placeholder.png"}
-                  alt={p.product.name}
+                  src={item.product?.image || "/placeholder.png"}
+                  alt={item.product?.name}
                   className="w-16 h-16 object-cover rounded"
                 />
                 <div className="flex-1">
-                  <p className="font-medium">{p.product.name}</p>
-                  <p className="text-sm text-gray-500">Quantity: {p.quantity}</p>
-                  <p className="text-sm text-gray-500">Subtotal: Rs {p.quantity * p.product.price}</p>
+                  <p className="font-medium">{item.product?.name}</p>
+                  <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                  <p className="text-sm text-gray-500">Subtotal: Rs {item.quantity * (item.product?.price || 0)}</p>
                 </div>
               </li>
             ))}
