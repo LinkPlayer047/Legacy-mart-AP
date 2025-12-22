@@ -7,6 +7,7 @@ import { BsFillBoxSeamFill } from "react-icons/bs";
 import { FaCartShopping, FaEye } from "react-icons/fa6";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Loader from "@/components/Loader";
+import Link from "next/link";
 
 export default function Dashboard() {
   const [users, setUsers] = useState([]);
@@ -112,10 +113,12 @@ export default function Dashboard() {
         <div className="mt-6 p-4 bg-gray-200/40 border border-gray-300/50 shadow-md rounded-lg">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-2">
             <h2 className="text-xl font-semibold">Recent Orders</h2>
+            <Link href="/orders">
             <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200">
               <FaEye className="text-lg" />
               <span>View All Orders</span>
             </button>
+          </Link>
           </div>
 
           <div className="overflow-x-auto">
