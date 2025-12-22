@@ -12,6 +12,7 @@ export default function OrdersTable({ orders, refresh }) {
             <th className="p-3">Status</th>
             <th className="p-3">Date</th>
             <th className="p-3 text-center">Action</th>
+            <th className="p-3 text-center">Details</th>
           </tr>
         </thead>
 

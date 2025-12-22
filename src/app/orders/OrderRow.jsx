@@ -55,6 +55,15 @@ export default function OrderRow({ order, refresh }) {
           <option value="cancelled">Cancelled</option>
         </select>
       </td>
+      <td className="p-3 text-center">
+  <button
+    className="text-blue-500 hover:underline"
+    onClick={() => router.push(`/admin/orders/${order._id}`)}
+  >
+    View Details
+  </button>
+</td>
+
     </tr>
   );
 }
