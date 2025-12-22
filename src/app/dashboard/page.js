@@ -129,18 +129,37 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {orders.slice(0, 5).map((order, idx) => (
-                  <tr
-                    key={idx}
-                    className="border-b border-b-gray-500/50 hover:bg-white transition-colors"
-                  >
-                    <td className="px-4 py-2">{order.id}</td>
-                    <td className="px-4 py-2">{order.customer}</td>
-                    <td className={`px-4 py-2 font-medium ${order.color || "text-black"}`}>{order.status}</td>
-                    <td className="px-4 py-2">{order.total}</td>
-                  </tr>
-                ))}
-              </tbody>
+  {orders.slice(0, 5).map((order, idx) => (
+    <tr
+      key={order._id}
+      className="border-b border-b-gray-500/50 hover:bg-white transition-colors"
+    >
+      <td className="px-4 py-2">
+        {order.orderNumber || order._id}
+      </td>
+
+      <td className="px-4 py-2">
+        <div>
+          <p className="font-medium">
+            {order.customer?.name || "N/A"}
+          </p>
+          <p className="text-xs text-gray-500">
+            {order.customer?.email || ""}
+          </p>
+        </div>
+      </td>
+
+      <td className="px-4 py-2 font-medium">
+        {order.status}
+      </td>
+
+      <td className="px-4 py-2 font-semibold">
+        Rs {order.totalPrice}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
             </table>
           </div>
         </div>
