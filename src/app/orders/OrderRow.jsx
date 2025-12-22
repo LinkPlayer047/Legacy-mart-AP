@@ -1,13 +1,10 @@
-import { useRouter } from "next/navigation";
 import StatusBadge from "./StatusBadge";
 
-export default function OrderRow({ order, refresh }) {
-  const router = useRouter();
-
+export default function OrderRow({ order, refresh, onView }) {
   const updateStatus = async (status) => {
     const token = document.cookie
       .split("; ")
-      .find(row => row.startsWith("adminToken="))
+      .find((row) => row.startsWith("adminToken="))
       ?.split("=")[1];
 
     await fetch(`https://legacy-mart.vercel.app/api/orders/${order._id}`, {
@@ -25,13 +22,22 @@ export default function OrderRow({ order, refresh }) {
   return (
     <tr className="border-b hover:bg-gray-50">
       <td className="p-3 font-medium">{order.orderNumber}</td>
+
       <td className="p-3">
         <p>{order.customer?.name || "N/A"}</p>
         <p className="text-xs text-gray-500">{order.customer?.email}</p>
       </td>
+
       <td className="p-3 font-semibold">Rs {order.totalPrice}</td>
-      <td className="p-3"><StatusBadge status={order.status} /></td>
-      <td className="p-3">{new Date(order.createdAt).toLocaleDateString()}</td>
+
+      <td className="p-3">
+        <StatusBadge status={order.status} />
+      </td>
+
+      <td className="p-3">
+        {new Date(order.createdAt).toLocaleDateString()}
+      </td>
+
       <td className="p-3 text-center">
         <select
           value={order.status}
@@ -45,10 +51,11 @@ export default function OrderRow({ order, refresh }) {
           <option value="cancelled">Cancelled</option>
         </select>
       </td>
+
       <td className="p-3 text-center">
         <button
-          className="text-white bg-blue-500 px-2 py-1 rounded hover:underline"
-          onClick={() => router.push(`/admin/orders/${order._id}`)}
+          className="text-blue-500 hover:underline"
+          onClick={onView} // Modal open
         >
           View Details
         </button>
