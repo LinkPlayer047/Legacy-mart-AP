@@ -56,10 +56,11 @@ export default function OrderDetailsModal({ order, onClose, updateStatus }) {
             {order.items?.map((item) => (
               <li key={item.product._id} className="flex items-center gap-4 py-2">
                 <img
-                  src={item.product?.image || "/placeholder.png"}
-                  alt={item.product?.name}
-                  className="w-16 h-16 object-cover rounded"
-                />
+  src={item.product.images?.[0]?.url || "/placeholder.png"}
+  alt={item.product.name || "Product Image"}
+  className="w-32 h-32 object-cover rounded"
+/>
+
                 <div className="flex-1">
                   <p className="font-medium">{item.product?.name}</p>
                   <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
