@@ -9,17 +9,16 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchOrders = async () => {
-    try {
-      const token = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("adminToken="))
-        ?.split("=")[1];
+    const token = localStorage.getItem("adminToken");
+    if (!token) return;
 
-      const res = await fetch("https://legacy-mart.vercel.app/api/orders", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    try {
+      const res = await fetch(
+        "https://legacy-mart.vercel.app/api/orders",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       const data = await res.json();
       setOrders(data.orders || []);
@@ -34,9 +33,7 @@ export default function OrdersPage() {
     fetchOrders();
   }, []);
 
-  if (loading) {
-    return <Loader />;
-  }
+  if (loading) return <Loader />;
 
   return (
     <Sidebar>

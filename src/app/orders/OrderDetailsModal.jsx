@@ -1,9 +1,6 @@
 export default function OrderDetailsModal({ order, onClose }) {
   const updateStatus = async (status) => {
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("adminToken="))
-      ?.split("=")[1];
+    const token = localStorage.getItem("adminToken");
 
     await fetch(`https://legacy-mart.vercel.app/api/orders/${order._id}`, {
       method: "PATCH",

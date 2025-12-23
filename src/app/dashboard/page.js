@@ -12,15 +12,12 @@ import Link from "next/link";
 export default function Dashboard() {
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
-  const [orders, setOrders] = useState([]); // Agar orders API bhi hai
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     setLoading(true);
-    const token = document.cookie
-      .split("; ")
-      .find((r) => r.startsWith("adminToken="))
-      ?.split("=")[1];
+    const token = localStorage.getItem("adminToken");
 
     try {
       // Fetch users
