@@ -31,12 +31,21 @@ export default function OrderRow({ order, refresh, onView }) {
       <td className="p-3 font-semibold">Rs {order.totalPrice}</td>
 
       <td className="p-3">
-        <StatusBadge status={order.status} />
+        {order.paymentMethod || "COD"}{" "}
+        {order.paymentMethod === "online" && (
+          <span className={`ml-2 font-semibold ${
+            order.status === "paid" ? "text-green-600" : "text-red-600"
+          }`}>
+            {order.status === "paid" ? "Paid" : "Pending"}
+          </span>
+        )}
       </td>
 
       <td className="p-3">
-        {new Date(order.createdAt).toLocaleDateString()}
+        <StatusBadge status={order.status} />
       </td>
+
+      <td className="p-3">{new Date(order.createdAt).toLocaleDateString()}</td>
 
       <td className="p-3 text-center">
         <select
@@ -55,7 +64,7 @@ export default function OrderRow({ order, refresh, onView }) {
       <td className="p-3 text-center">
         <button
           className="text-blue-500 hover:underline"
-          onClick={onView} // Modal open
+          onClick={onView}
         >
           View Details
         </button>

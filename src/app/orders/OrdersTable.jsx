@@ -14,6 +14,7 @@ export default function OrdersTable({ orders, refresh }) {
               <th className="p-3">Order #</th>
               <th className="p-3">Customer</th>
               <th className="p-3">Total</th>
+              <th className="p-3">Payment</th>
               <th className="p-3">Status</th>
               <th className="p-3">Date</th>
               <th className="p-3 text-center">Action</th>
@@ -24,7 +25,7 @@ export default function OrdersTable({ orders, refresh }) {
           <tbody>
             {orders.length === 0 && (
               <tr>
-                <td colSpan="7" className="p-4 text-center text-gray-500">
+                <td colSpan="8" className="p-4 text-center text-gray-500">
                   No orders found
                 </td>
               </tr>
@@ -42,7 +43,6 @@ export default function OrdersTable({ orders, refresh }) {
         </table>
       </div>
 
-      {/* Modal */}
       {selectedOrder && (
         <OrderDetailsModal
           order={selectedOrder}

@@ -1,9 +1,26 @@
-export default function OrderDetailsModal({ order, onClose, updateStatus }) {
+export default function OrderDetailsModal({ order, onClose }) {
+  const updateStatus = async (status) => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("adminToken="))
+      ?.split("=")[1];
+
+    await fetch(`https://legacy-mart.vercel.app/api/orders/${order._id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    window.location.reload();
+  };
+
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full relative flex flex-col md:flex-row gap-6">
         
-        {/* Close button */}
         <button
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg font-bold"
           onClick={onClose}
@@ -11,7 +28,6 @@ export default function OrderDetailsModal({ order, onClose, updateStatus }) {
           ✖
         </button>
 
-        {/* Left section: Order & Customer info */}
         <div className="flex-1">
           <h2 className="text-2xl font-bold mb-4">Order #{order.orderNumber}</h2>
 
@@ -24,12 +40,22 @@ export default function OrderDetailsModal({ order, onClose, updateStatus }) {
           <div className="mb-3">
             <strong>Total:</strong> Rs {order.totalPrice}
           </div>
-          <div className="mb-3">
-            <strong>Status:</strong> 
-            <span className="ml-2 font-semibold">{order.status}</span>
-          </div>
 
-          {/* Status update buttons */}
+          <div className="mb-3">
+            <strong>Payment Method:</strong> {order.paymentMethod || "COD"}
+          </div>
+          {order.paymentMethod === "online" && (
+            <div className="mb-3">
+              <strong>Payment Status:</strong>{" "}
+              {order.status === "paid" ? "Paid" : "Pending"}
+            </div>
+          )}
+          {order.paymentId && (
+            <div className="mb-3">
+              <strong>Transaction ID:</strong> {order.paymentId}
+            </div>
+          )}
+
           <div className="mt-4 flex flex-wrap gap-2">
             {["pending", "confirmed", "shipped", "delivered", "cancelled"].map((status) => (
               <button
@@ -49,7 +75,6 @@ export default function OrderDetailsModal({ order, onClose, updateStatus }) {
           </div>
         </div>
 
-        {/* Right section: Products */}
         <div className="flex-1 overflow-y-auto max-h-[400px]">
           <h3 className="font-semibold mb-2 text-lg">Products</h3>
           <ul className="list-none">
@@ -60,7 +85,6 @@ export default function OrderDetailsModal({ order, onClose, updateStatus }) {
                   alt={item.product?.name || "Product Image"}
                   className="w-32 h-32 object-cover rounded"
                 />
-                
                 <div className="flex-1">
                   <p className="font-medium">{item.product?.name}</p>
                   <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>

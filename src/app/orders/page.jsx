@@ -11,11 +11,11 @@ export default function OrdersPage() {
   const fetchOrders = async () => {
     try {
       const token = document.cookie
-          .split("; ")
-          .find(row => row.startsWith("adminToken="))
-          ?.split("=")[1];
+        .split("; ")
+        .find((row) => row.startsWith("adminToken="))
+        ?.split("=")[1];
 
-      const res = await fetch("https://legacy-mart.vercel.app/api/orders", {
+      const res = await fetch(`https://legacy-mart.vercel.app/api/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,11 +39,11 @@ export default function OrdersPage() {
   }
 
   return (
-    <Sidebar >
-    <div className="w-full">
-      <h1 className="text-2xl font-bold mb-6">Orders Management</h1>
-      <OrdersTable orders={orders} refresh={fetchOrders} />
-    </div>
+    <Sidebar>
+      <div className="w-full">
+        <h1 className="text-2xl font-bold mb-6">Orders Management</h1>
+        <OrdersTable orders={orders} refresh={fetchOrders} />
+      </div>
     </Sidebar>
   );
 }
