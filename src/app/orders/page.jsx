@@ -15,7 +15,7 @@ export default function OrdersPage() {
         .find((row) => row.startsWith("adminToken="))
         ?.split("=")[1];
 
-      const res = await fetch(`https://legacy-mart.vercel.app/api/orders`, {
+      const res = await fetch("https://legacy-mart.vercel.app/api/orders", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
