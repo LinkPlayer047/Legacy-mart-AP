@@ -44,7 +44,7 @@ export default function OrderDetailsModal({ order, onClose }) {
           {order.paymentMethod === "online" && (
             <div className="mb-3">
               <strong>Payment Status:</strong>{" "}
-              {order.status === "paid" ? "Paid" : "Pending"}
+              {order.orderStatus === "paid" ? "Paid" : "Pending"}
             </div>
           )}
           {order.paymentId && (

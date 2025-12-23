@@ -39,14 +39,14 @@ export default function OrderRow({ order, refresh, onView }) {
       </td>
 
       <td className="p-3">
-        <StatusBadge status={order.status} />
+        <StatusBadge status={order.orderStatus} />
       </td>
 
       <td className="p-3">{new Date(order.createdAt).toLocaleDateString()}</td>
 
       <td className="p-3 text-center">
         <select
-          value={order.status}
+          value={order.orderStatus}
           onChange={(e) => updateStatus(e.target.value)}
           className="border rounded px-2 py-1 text-sm"
         >
